@@ -5,20 +5,21 @@ package service;
 import "error.proto";
 
 message UserRequest {
-    uint32 id=1;
+	uint32 id=1;
 }
 
 message User {
-    uint32 id = 1;
-    string name = 2;
-    string email = 3;
-    string created_at = 4;
-    string updated_at = 5;
+	uint32 id = 1;
+	string name = 2;
+	string email = 3;
+	string token = 4;
+	string created_at = 5;
+	string updated_at = 6;
 }
 
 message UserResponse {
-    oneof response {
-        User user = 1;
-        Error error = 2;
-    }
+	oneof body {
+		User data = 1;
+		Error error = 2;
+	}
 }

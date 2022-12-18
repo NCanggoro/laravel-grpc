@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package service;
 
-import "user_signin.proto";
-import "user_signup.proto";
+import "user_login.proto";
+import "user_register.proto";
 import "user.proto";
 
 service UserService {
-    rpc getUser(UserRequest) returns (UserResponse) {}
+	rpc getUser(UserRequest) returns (UserResponse) {}
 }
 
 service AuthService {
-    rpc userSignIn(UserSignInRequest) returns (UserSignInResponse) {}
-    rpc userSignUp(UserSignUpRequest) returns (UserSignUpResponse) {}
+	rpc userLogin (UserLoginRequest) returns  (UserLoginResponse) {}
+	rpc userRegister (UserRegisterRequest) returns (UserRegisterResponse) {}
 }

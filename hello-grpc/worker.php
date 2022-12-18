@@ -2,7 +2,9 @@
 
 use Illuminate\Contracts\Console\Kernel;
 use \Service\UserServiceInterface;
+use \Service\AuthServiceInterface;
 use \App\Services\UserService;
+use \App\Services\AuthService;
 use Spiral\RoadRunner\Worker;
 use \Spiral\GRPC\Server;
 
@@ -14,5 +16,6 @@ $app->make(Kernel::class)->bootstrap();
 
 $server = $app->make(\Spiral\GRPC\Server::class);
 $server->registerService(UserServiceInterface::class, new UserService());
+$server->registerService(AuthServiceInterface::class, new AuthService());
 $worker = new  Spiral\RoadRunner\Worker(new Spiral\Goridge\StreamRelay(STDIN, STDOUT));
 $server->serve($worker);

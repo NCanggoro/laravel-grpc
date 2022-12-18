@@ -3,6 +3,6 @@ syntax = "proto3";
 package service;
 
 message Error {
-    uint32 code = 1;
-    string message = 2;
+	uint32 status_code = 1;
+	string message = 2;
 }

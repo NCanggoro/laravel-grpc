@@ -2,94 +2,94 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Singleton\Message;
+use App\Classes\Singleton\RequestValidator;
+
 use Validator;
 
 use Service\UserServiceClient;
+use Google\Rpc\Status;
 use Grpc\ChannelCredentials;
-use Service\UserRequest;
-use Service\UserSignUpRequest;
-use Service\UserSignInRequest;
-
+use Service\AuthServiceClient;
+use Service\UserRegisterRequest;
+use Service\UserLoginRequest;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    protected $grpc_client;
+    protected $auth_service;
+    protected $message;
+    protected $validator;
+
     public function __construct()
     {
-        $this->grpc_client = new UserServiceClient('0.0.0.0:9001', [
+        $this->auth_service = new AuthServiceClient('0.0.0.0:9001', [
             'credentials' => ChannelCredentials::createInsecure(),
         ]);
-    }
 
-    public function getUser(Request $request)
-    {
-        $user_request = new UserRequest();
-        $user_request->setId($request->id);
-
-        list($response, $status) = $this->grpc_client->getUser($user_request)->wait();
-
-        return response()->json(json_decode($response->serializeToJsonString()), 200);
+        $this->message = Message::getInstance();
+        $this->validator = RequestValidator::getInstance();
     }
 
     public function register(Request $request)
     {
         try {
-            $userValidator = Validator::make($request->all(), [
-                'email' => 'required',
+            $this->validator::validate($request->all(), [
+                'email' => 'required|email',
                 'password' => 'required',
                 'name' => 'required'
             ]);
     
-            if($userValidator->fails()) {
-                return response()->json(['message' => $userValidator->errors()], 400);
-            }
-    
-            $user_request = new UserSignUpRequest();
+            $user_request = new UserRegisterRequest();
             $user_request->setEmail($request->email);
             $user_request->setName($request->name);
             $user_request->setPassword($request->password);
     
-            list($response, $status) = $this->grpc_client->userSignUp($user_request)->wait();
-    
-            return response()->json([
-                'message' => 'Success',
-                'data' => json_decode($response->serializeToJsonString())
-            ], 200);
+            [$response, $status] = $this->auth_service->userRegister($user_request)->wait();
 
-        } catch(\Exception $e) {
+            if($status->code !== \Grpc\STATUS_OK) {
+                return $this->message->errorJsonResponse($status);
+            }
+
+            $data = json_decode($response->serializeToJsonString());
+
+            return $this->message->getJsonResponse($status, "Success", $data->data);
+
+        } catch(Exception $e) {
             return response()->json([
                 'message' => 'error',
                 'data' => $e->getMessage()
-            ]);
+            ], 500);
         }   
     }
 
     public function login(Request $request)
     {
         try {
-            $userValidator = Validator::make($request->all(), [
-                'email' => 'required',
+            $this->validator->validate($request->all(), [
+                'email' => 'required|email',
                 'password' => 'required',
             ]);
-    
-            if($userValidator->fails()) {
-                return response()->json(['message' => $userValidator->errors()], 400);
-            }
-    
-            $user_request = new UserSignInRequest();
+
+            $user_request = new UserLoginRequest();
             $user_request->setEmail($request->email);
             $user_request->setPassword($request->password);
     
-            list($response, $status) = $this->grpc_client->userSignIn($user_request)->wait();
-    
-            return response()->json(json_decode($response->serializeToJsonString()), 200);
+            [$response, $status] = $this->auth_service->userLogin($user_request)->wait();
 
-        } catch(\Exception $e) {
+            if($status->code !== \Grpc\STATUS_OK) {
+                return $this->message->errorJsonResponse($status);
+            }
+
+            $data = json_decode($response->serializeToJsonString());
+
+            return $this->message->getJsonResponse($status, "Success", $data->data);
+
+        } catch(Exception $e) {
             return response()->json([
                 'message' => 'error',
                 'data' => $e->getMessage()
-            ]);
+            ], 500);
         }   
     }
 }

@@ -30,7 +30,10 @@
             "Database\\Seeders\\": "database/seeders/",
             "Service\\": "protobuf/build/Service/",
             "": "protobuf/build/"
-        }
+        },
+        "files": [
+            "app/Helpers/log.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

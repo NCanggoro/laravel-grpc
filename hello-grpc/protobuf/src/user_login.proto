@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package service;
+
+import "error.proto";
+import "user.proto";
+
+message UserLoginRequest {
+	string email = 1;
+	string password = 2;
+}
+
+message UserLoginResponse {
+	oneof body {
+		User data = 1;
+		Error error = 2;
+	}
+}

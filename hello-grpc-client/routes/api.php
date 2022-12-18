@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group([], function($router) {
-    $router->post('/user', 'AuthController@getUser');
+    $router->post('/user', 'UserController@getUser');
     $router->post('/register', 'AuthController@register');
     $router->post('/login', 'AuthController@login');
 });

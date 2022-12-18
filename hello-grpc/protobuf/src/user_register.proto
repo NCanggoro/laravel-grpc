@@ -5,15 +5,15 @@ package service;
 import "user.proto";
 import "error.proto";
 
-message UserSignUpRequest {
+message UserRegisterRequest {
 	string name = 1;
 	string email = 2;
 	string password = 3;
 }
 
-message UserSignUpResponse { 
-	oneof response {    
-		User user = 1; 
+message UserRegisterResponse { 
+	oneof body {    
+		User data = 1; 
 		Error error = 2;
 	}
 }
