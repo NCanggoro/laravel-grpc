@@ -2,10 +2,10 @@
 
 1. run ``composer install`` and`` composer dump-autoload`` on both client and server
     ```
-        // grpc server
+        # grpc server
         $ cd yoripe-grpc
         $ composer install
-        // grpc client
+        # grpc client
         $ cd yoripe-grpc-client
         $ composer install
     ```
@@ -18,7 +18,7 @@
 
 3. genereate server protobuf
     ```
-        // cd yoripe-grpc/protobuf/
+        # cd yoripe-grpc/protobuf/
         $ ./gen_proto_sh
     ```
 
