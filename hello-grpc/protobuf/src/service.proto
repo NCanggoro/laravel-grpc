@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package service;
+
+import "user_signin.proto";
+import "user_signup.proto";
+import "user.proto";
+
+service UserService {
+    rpc getUser(UserRequest) returns (UserResponse) {}
+}
+
+service AuthService {
+    rpc userSignIn(UserSignInRequest) returns (UserSignInResponse) {}
+    rpc userSignUp(UserSignUpRequest) returns (UserSignUpResponse) {}
+}

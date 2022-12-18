@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package service;
+
+import "error.proto";
+
+message UserRequest {
+    uint32 id=1;
+}
+
+message User {
+    uint32 id = 1;
+    string name = 2;
+    string email = 3;
+    string created_at = 4;
+    string updated_at = 5;
+}
+
+message UserResponse {
+    oneof response {
+        User user = 1;
+        Error error = 2;
+    }
+}
