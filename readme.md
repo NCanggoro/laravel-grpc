@@ -4,8 +4,9 @@
     ```
         $ ./yoripe-grpc/protobuf/gen_proto_sh
     ```
-2. migrate database
+2. migrate database on grpc server
     ```
+        $ cd yoripe-grpc
         $ php artisan migrate
     ```
 2. symlink grpc server protobuf with  client directory
@@ -15,8 +16,8 @@
 3. run ``composer install`` and`` composer dump-autoload`` on both client and server
 4. run roadruner in server
     ```
-        $ cd yoripe-grpc
-        $ ./rr serve
+        $ cd yoripe-grpc &&\
+        ./rr serve
     ```
 5. run php artisan serve on client
     ```
