@@ -20,18 +20,10 @@ class RequestValidator
         return self::$instance;
     }
 
-    public static function validate($data,$rules)
+    public function validate($data,$rules)
     {
 
-        $validated = Validator::make($data,$rules);
         
-        if($validated->fails()){
-            return response()->json([
-                'status_code' => 400,
-                'message' => $validated->errors(),
-            ],400);
-            
-        }
 
     }
 }

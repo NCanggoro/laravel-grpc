@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Classes\Singleton\Message;
-use App\Classes\Singleton\RequestValidator;
 
 use Validator;
 
@@ -19,7 +18,6 @@ class AuthController extends Controller
 {
     protected $auth_service;
     protected $message;
-    protected $validator;
 
     public function __construct()
     {
@@ -28,17 +26,23 @@ class AuthController extends Controller
         ]);
 
         $this->message = Message::getInstance();
-        $this->validator = RequestValidator::getInstance();
     }
 
     public function register(Request $request)
     {
         try {
-            $this->validator::validate($request->all(), [
+            $validated = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required',
                 'name' => 'required'
             ]);
+            
+            if($validated->fails()) {
+                return response()->json([
+                    'status_code' => 400,
+                    'message' => $validated->errors()
+                ], 400);
+            }
     
             $user_request = new UserRegisterRequest();
             $user_request->setEmail($request->email);
@@ -66,10 +70,18 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $this->validator->validate($request->all(), [
+            $validated = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required',
             ]);
+        
+            if($validated->fails()){
+                return response()->json([
+                    'status_code' => 400,
+                    'message' => $validated->errors(),
+                ],400);
+                
+            }
 
             $user_request = new UserLoginRequest();
             $user_request->setEmail($request->email);
